@@ -1,0 +1,94 @@
+# Week 1 - Environment Setup Summary
+
+## Overview
+
+Today I completed the setup of my data science development environment based on the UBC MDS requirements.
+The process involved installing and configuring Git, VS Code, Miniforge (conda), and JupyterLab.
+
+---
+
+## What I Completed
+
+* Installed Git and configured command line usage
+* Installed Visual Studio Code and added it to PATH
+* Installed Miniforge (conda-based Python environment)
+* Initialized conda in Git Bash (`conda init bash`)
+* Installed JupyterLab via conda
+* Verified all tools in Git Bash:
+
+  * `conda`
+  * `python`
+  * `git`
+  * `code`
+  * `jupyter lab`
+
+---
+
+## Problems Encountered
+
+### 1. Environment Conflicts (Anaconda Residue)
+
+* Previous installations caused conflicts (e.g., PATH confusion, multiple Python environments)
+* Some commands were not recognized or pointed to wrong locations
+
+### 2. Git Not Recognized
+
+* `git --version` returned command not found
+* Caused by Git not properly added to PATH
+
+### 3. VS Code Command Line Not Working
+
+* `code --version` initially failed
+* Required enabling "Add to PATH" during installation
+
+### 4. Wrong Terminal Usage
+
+* Initially used PowerShell instead of Git Bash
+* Resulted in inconsistent environment behavior
+
+### 5. Conda Not Available in Git Bash
+
+* After installation, `conda` was not recognized in Git Bash
+* Fixed by running:
+
+  ```bash
+  conda init bash
+  ```
+
+### 6. Jupyter Not Installed
+
+* `jupyter lab` returned command not found
+* Installed manually using:
+
+  ```bash
+  conda install -c conda-forge jupyterlab
+  ```
+
+---
+
+## Key Lessons Learned
+
+### 1. Clean Environment Matters
+
+Avoid mixing multiple Python distributions (Anaconda, system Python, etc.).
+Using Miniforge alone keeps the environment clean and reproducible.
+
+### 2. Do NOT Add Conda to PATH
+
+Adding conda to PATH can cause conflicts.
+Instead, rely on shell initialization (`conda init`).
+
+### 3. Terminal Choice Matters
+
+Git Bash provides a more Unix-like environment and works better with conda and development workflows than PowerShell.
+
+### 4. Always Verify Installations
+
+Running version commands is essential to ensure tools are correctly installed and accessible.
+
+---
+
+## Final Status
+
+All tools are successfully installed and verified.
+The development environment is ready for Python learning and data science projects.
