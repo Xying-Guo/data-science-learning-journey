@@ -1,0 +1,494 @@
+# Week 1 Bash Learning Notes
+
+## Overview
+
+This week, I completed the first five chapters of the Software Carpentry **The Unix Shell** tutorial:
+
+1. Introducing the Shell
+2. Navigating Files and Directories
+3. Working With Files and Directories
+4. Pipes and Filters
+5. Loops
+
+The goal of this stage was to build a basic understanding of Bash and command-line work, especially for file navigation, file operations, text processing, and simple automation.
+
+---
+
+## 1. Introducing the Shell
+
+The shell is a command-line interface that allows users to interact with the operating system by typing commands. Unlike a graphical interface, the shell is especially useful for:
+
+- navigating file systems quickly
+- processing many files at once
+- combining small tools into larger workflows
+- automating repetitive tasks
+
+In this tutorial, the shell used is **Bash**.
+
+### Key ideas
+
+- The terminal is the window where commands are entered.
+- The shell is the program that interprets and executes those commands.
+- The `$` shown in tutorials is only the prompt symbol. It should **not** be typed.
+
+For example, if the tutorial shows:
+
+```bash
+$ pwd
+```
+
+I should type:
+
+```bash
+pwd
+```
+
+not `$ pwd`.
+
+---
+
+## 2. Navigating Files and Directories
+
+This chapter focused on understanding where I am in the file system and how to move between directories.
+
+### Core commands
+
+#### `pwd`
+
+Shows the current working directory.
+
+```bash
+pwd
+```
+
+#### `ls`
+
+Lists the contents of the current directory.
+
+```bash
+ls
+```
+
+Useful options:
+
+- `ls -F` → adds type markers such as `/` for directories
+- `ls -a` → shows hidden files
+- `ls -l` → shows detailed information
+- `ls -t` → sorts by modification time
+- `ls -r` → reverses the order
+
+#### `cd`
+
+Changes the current directory.
+
+```bash
+cd Desktop
+cd ..
+cd
+cd ~
+```
+
+### Important concepts
+
+#### Absolute path
+
+A full path starting from the root.
+
+#### Relative path
+
+A path based on the current directory.
+
+#### Special symbols
+
+- `~` = home directory
+- `.` = current directory
+- `..` = parent directory
+
+### What I learned
+
+- `pwd` tells me where I am.
+- `ls` tells me what is here.
+- `cd` moves me somewhere else.
+- `ls path` only shows the contents of a path; it does **not** move me into that path.
+- If a folder name contains spaces, I need to use quotes or escape the space with `\`.
+
+Example:
+
+```bash
+cd "DSCI 521"
+```
+
+or
+
+```bash
+cd DSCI\ 521
+```
+
+---
+
+## 3. Working With Files and Directories
+
+This chapter covered the most common file and folder operations.
+
+### Core commands
+
+#### `mkdir`
+
+Creates a new directory.
+
+```bash
+mkdir test_dir
+mkdir -p notes/week1
+```
+
+#### `cat`
+
+Displays file contents.
+
+```bash
+cat test.txt
+```
+
+#### `cp`
+
+Copies files or directories.
+
+```bash
+cp old.txt new.txt
+cp -r old_dir new_dir
+```
+
+#### `mv`
+
+Moves or renames files.
+
+```bash
+mv old.txt new.txt
+mv file.txt folder/
+```
+
+#### `rm`
+
+Removes files or directories.
+
+```bash
+rm file.txt
+rm -r old_dir
+```
+
+### Output redirection
+
+#### `>`
+
+Writes output to a file and overwrites existing content.
+
+```bash
+echo "hello world" > test.txt
+```
+
+#### `>>`
+
+Appends output to the end of a file.
+
+```bash
+echo "new line" >> test.txt
+```
+
+### What I learned
+
+- `>` overwrites a file.
+- `>>` appends to a file.
+- `mv` can be used both for moving and renaming.
+- `rm` is powerful and should be used carefully.
+- Successful commands often produce no output, and that is normal.
+
+---
+
+## 4. Pipes and Filters
+
+This chapter introduced one of the most useful ideas in Bash: connecting commands together.
+
+### Pipe: `|`
+
+A pipe sends the output of one command directly into another command.
+
+```bash
+command1 | command2
+```
+
+This makes it possible to build a workflow from smaller tools.
+
+### Core commands
+
+#### `wc`
+
+Counts lines, words, and bytes.
+
+```bash
+wc file.txt
+wc -l file.txt
+```
+
+#### `sort`
+
+Sorts lines.
+
+```bash
+sort file.txt
+sort -n numbers.txt
+```
+
+- `sort` sorts alphabetically / lexicographically
+- `sort -n` sorts numerically
+
+#### `head`
+
+Shows the first lines of a file.
+
+```bash
+head file.txt
+head -n 5 file.txt
+```
+
+#### `tail`
+
+Shows the last lines of a file.
+
+```bash
+tail file.txt
+tail -n 2 file.txt
+```
+
+#### `cut`
+
+Extracts fields from structured text.
+
+```bash
+cut -d , -f 2 animals.csv
+```
+
+This means:
+
+- delimiter is `,`
+- field 2 is extracted
+
+#### `uniq`
+
+Removes adjacent duplicate lines.
+
+```bash
+uniq file.txt
+```
+
+Important: `uniq` only removes duplicates that are next to each other. That is why it is often used with `sort`:
+
+```bash
+sort file.txt | uniq
+```
+
+#### `uniq -c`
+
+Counts adjacent duplicate lines.
+
+```bash
+sort file.txt | uniq -c
+```
+
+### What I learned
+
+- Pipes allow commands to work together.
+- `sort` and `uniq` are often used together.
+- `uniq` is not global deduplication; it only works on adjacent repeated lines.
+- `wc -l` is useful for counting lines.
+- `head -n` and `tail -n` let me choose how many lines to display.
+
+### Example workflows
+
+#### Find the shortest text files by line count
+
+```bash
+wc -l *.txt | sort -n | head -n 5
+```
+
+#### Extract animal names and remove duplicates
+
+```bash
+cut -d , -f 2 animals.csv | sort | uniq
+```
+
+#### Count how many times each animal appears
+
+```bash
+cut -d , -f 2 animals.csv | sort | uniq -c
+```
+
+#### Save and append output
+
+```bash
+head -n 3 animals.csv > animals-subset.csv
+tail -n 2 animals.csv >> animals-subset.csv
+```
+
+This first writes the first three lines into a new file, then appends the last two lines.
+
+---
+
+## 5. Loops
+
+This chapter introduced the basic `for` loop in Bash.
+
+### Basic structure
+
+```bash
+for file in *.txt
+do
+  echo $file
+done
+```
+
+This means:
+
+- take each `.txt` file one by one
+- store its name in the variable `file`
+- run the command inside the loop for each file
+
+### Examples
+
+#### Print file names
+
+```bash
+for file in *.txt
+do
+  echo $file
+done
+```
+
+#### Display file contents
+
+```bash
+for file in *.txt
+do
+  cat $file
+done
+```
+
+#### Count lines in multiple files
+
+```bash
+for file in *.pdb
+do
+  wc -l $file
+done
+```
+
+### What I learned
+
+- Loops are useful for batch processing.
+- `for ... do ... done` is the basic loop structure.
+- Variables need `$` to access their values.
+- Wildcards such as `*.txt` match multiple files.
+
+---
+
+## Key Commands Summary
+
+| Command | Meaning |
+|--------|---------|
+| `pwd` | show current directory |
+| `ls` | list directory contents |
+| `cd` | change directory |
+| `mkdir` | create a directory |
+| `cat` | show file contents |
+| `cp` | copy file or directory |
+| `mv` | move or rename file |
+| `rm` | remove file or directory |
+| `wc -l` | count lines |
+| `sort` | sort lines |
+| `sort -n` | sort numerically |
+| `head` | show first 10 lines |
+| `head -n 5` | show first 5 lines |
+| `tail` | show last 10 lines |
+| `tail -n 2` | show last 2 lines |
+| `cut -d , -f 2` | extract the second column from a CSV |
+| `uniq` | remove adjacent duplicates |
+| `uniq -c` | count adjacent duplicates |
+| `|` | pipe output from one command to another |
+| `>` | overwrite output to a file |
+| `>>` | append output to a file |
+
+---
+
+## Common Mistakes I Encountered
+
+### 1. Confusing `ls path` with `cd path`
+
+- `ls path` only shows what is inside the path
+- `cd path` actually moves into that directory
+
+### 2. Forgetting that `uniq` only removes adjacent duplicates
+
+This is why `sort | uniq` is a very common pattern.
+
+### 3. Confusing `>` and `>>`
+
+- `>` replaces the existing content
+- `>>` adds new content to the end
+
+### 4. Thinking no output means the command failed
+
+Some commands, such as `cd`, often produce no output when they run successfully.
+
+### 5. Forgetting to handle spaces in file names
+
+Paths with spaces need quotes or escaped spaces.
+
+---
+
+## Key Points
+
+- Bash is a command-line environment for interacting with the operating system.
+- `pwd`, `ls`, and `cd` are the most fundamental navigation commands.
+- Paths can be absolute or relative.
+- `mkdir`, `cp`, `mv`, and `rm` are essential for file and directory management.
+- `>` overwrites a file, while `>>` appends to it.
+- Pipes make it possible to chain simple commands into useful workflows.
+- `sort`, `cut`, `uniq`, `wc`, `head`, and `tail` are core text-processing tools.
+- `uniq` only works on adjacent duplicate lines, so it is often used after `sort`.
+- `for` loops are the starting point for automation and batch processing.
+- Learning Bash is less about memorizing every command and more about understanding how to combine small commands to solve problems efficiently.
+
+---
+
+## Reflection
+
+After finishing these five chapters, I now have a much clearer understanding of how Bash works at a basic level. At first, many commands looked small and disconnected, but after practicing them together, I started to see the logic of the shell: each command does one small job, and the real power comes from combining them.
+
+This stage gave me a practical foundation for future work in data science, especially for navigating project folders, processing files, and building repeatable workflows.
+
+---
+
+## Practice Commands Used
+
+```bash
+pwd
+ls
+ls -F
+ls -a
+ls -l
+ls -lt
+ls -rt
+cd
+cd ..
+mkdir test_dir
+cat test.txt
+cp a.txt b.txt
+mv b.txt c.txt
+rm c.txt
+wc -l *.txt | sort -n | head -n 5
+cut -d , -f 2 animals.csv | sort | uniq
+cut -d , -f 2 animals.csv | sort | uniq -c
+for file in *.txt
+do
+  echo $file
+done
+```
